@@ -7,7 +7,7 @@ export type PlayerPositions={
 }
 export type Formation = {
   name: string;
-  positions: Omit<PlayerPositions, "name">[]; // predefined ones don’t have names
+  positions: Omit<PlayerPositions, "name">[]; 
 };
 export const formations: Formation[]=[
   {

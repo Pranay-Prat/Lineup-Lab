@@ -1,4 +1,4 @@
-import { PlayerColor} from "@/constants/colors";
+import { PlayerColor} from "@/lib/colors";
 import { PlayerIcon } from "./PlayerIcon";
 import { useLineupStore } from "@/store/lineupStore";
 
