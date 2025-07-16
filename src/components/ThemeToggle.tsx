@@ -8,7 +8,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="rounded-full p-2 transition-colors hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className={`rounded-full p-2 transition-colors ${theme === 'dark' ? 'hover:bg-white' :'hover:bg-gray-200'} focus:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
     >
       {theme === 'dark' ? (
         <svg
