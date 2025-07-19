@@ -1,12 +1,12 @@
-import { PrismaClient } from "@/generated/prisma";
+import { prisma } from "./prisma";
 
-export async function getUserById(userId: string) {
-const prisma = new PrismaClient();
-  if (!userId) return null;
+export async function getUserById(clerkId: string) {
+
+  if (!clerkId) return null;
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId:clerkId },
     });
     return user;
   } catch (error) {

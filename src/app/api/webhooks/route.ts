@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
-import { PrismaClient } from "@/generated/prisma";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/db/prisma";
+
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 export async function POST(req: NextRequest) {
   try {

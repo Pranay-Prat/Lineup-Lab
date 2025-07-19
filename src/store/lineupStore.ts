@@ -1,17 +1,12 @@
 
 import { create } from "zustand";
 
-type Player = {
-  id: string;
-  number: number;
-  top: number;
-  left: number;
-};
+import { PlayerPositions } from "@/lib/formations";
 
 type LineupStore = {
-  players: Player[];
+  players: PlayerPositions[];
   playerColor: string;
-  setPlayers: (players: Player[]) => void;
+  setPlayers: (players: PlayerPositions[]) => void;
   setPlayerColor: (color: string) => void;
 };
 

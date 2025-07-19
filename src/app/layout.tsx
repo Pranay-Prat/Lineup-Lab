@@ -23,7 +23,9 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning className={outfit.className} >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          </ThemeProvider>
         
       </body>
     </html>
