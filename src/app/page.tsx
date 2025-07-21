@@ -1,64 +1,41 @@
-'use client';
-
-import { useState } from 'react';
-import { Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavToggle, MobileNavMenu, NavbarButton } from '@/components/ui/resizable-navbar' // adjust import
-import { ThemeToggle } from '@/components/ThemeToggle';
-
-const navLinks = [
-  { name: 'Lineups', link: '/lineups' },
-  { name: 'Build', link: '/build' },
-  { name: 'Features', link: '/features' }
-];
-
-export default function MainNavbar() {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+export default function Home() {
   return (
-    <Navbar>
-      {/* Desktop Nav */}
-      <NavBody>
-        {/* Left Side Title */}
-        <div className="flex items-center space-x-4">
-          <a href="/" className="text-lg font-bold text-black dark:text-white">Lineup Builder</a>
-        </div>
-
-        {/* Center Nav Items */}
-        <NavItems items={navLinks} />
-
-        {/* Right Side Controls */}
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <NavbarButton href="/login">Login</NavbarButton>
-        </div>
-      </NavBody>
-
-      {/* Mobile Nav */}
-      <MobileNav>
-        <MobileNavHeader>
-          <a href="/" className="text-lg font-bold text-black dark:text-white">Lineup Builder</a>
-          <MobileNavToggle
-            isOpen={isMobileMenuOpen}
-            onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-          />
-        </MobileNavHeader>
-
-        <MobileNavMenu isOpen={isMobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
-          {navLinks.map((item, idx) => (
-            <a
-              key={idx}
-              href={item.link}
-              className="text-md w-full rounded-md px-2 py-2 font-medium text-black hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-800"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {item.name}
-            </a>
-          ))}
-          <div className="mt-4 flex w-full items-center justify-between">
-            <ThemeToggle />
-            <NavbarButton href="/login" className="ml-2">Login</NavbarButton>
+    <div className="min-h-screen bg-background font-sans">
+      {/* Demo content to show scrolling behavior */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-20">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 font-sans">
+              Welcome to LineupLab
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto font-sans">
+              Build the perfect lineup for your team with our advanced analytics and management tools.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center font-sans">
+              <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors font-sans">
+                Get Started Free
+              </button>
+              <button className="px-8 py-3 border border-border text-foreground rounded-lg font-medium hover:bg-accent transition-colors font-sans">
+                Watch Demo
+              </button>
+            </div>
           </div>
-        </MobileNavMenu>
-      </MobileNav>
-    </Navbar>
+        </section>
+
+        {/* Additional sections to demonstrate scroll behavior */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <section key={i} className="py-20 border-t border-border font-sans">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-foreground mb-4 font-sans">Section {i + 1}</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto font-sans">
+                This is demo content to show how the navbar behaves when scrolling. Notice how it becomes blurred and
+                gains a border when you scroll down.
+              </p>
+            </div>
+          </section>
+        ))}
+      </main>
+    </div>
   );
 }
+

@@ -1,12 +1,16 @@
+// app/layout.tsx
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { Outfit } from 'next/font/google';
+import Navbar from "@/components/ui/navbar";
+
 const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-outfit', 
-  display: 'swap', 
+  variable: '--font-outfit',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -21,14 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en" suppressHydrationWarning className={outfit.className} >
-      <body>
-        <ThemeProvider>
-          {children}
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${outfit.variable} font-sans bg-background text-foreground`}>
+          {/* We have removed the extra props to fix the TypeScript error */}
+          <ThemeProvider>
+            <Navbar />
+            <main>{children}</main>
           </ThemeProvider>
-        
-      </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
