@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { ThemeToggle } from "../ThemeToggle"
+import Signin from "./Sign-In"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -37,7 +38,7 @@ const Navbar = () => {
           isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
           <div className="flex items-center justify-between h-20">
             {/* Left - Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
@@ -78,24 +79,16 @@ const Navbar = () => {
             </motion.div>
 
             <div className="hidden md:flex items-center space-x-4">
-       
               <div className="theme-toggle-placeholder">
-                {/* Your theme toggle component goes here */}
-                <motion.button
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg"
                 >
                   <ThemeToggle/>
-                </motion.button>
+                </motion.div>
               </div>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200"
-              >
-                Get Started
-              </motion.button>
+                <Signin/>
             </div>
 
             {/* Mobile menu button */}
@@ -152,20 +145,19 @@ const Navbar = () => {
                 <div className="pt-4 space-y-3 border-t border-border">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground font-medium">Theme</span>
-                    {/* Your mobile theme toggle component goes here */}
-                    <motion.button
+                    <motion.div
                       whileTap={{ scale: 0.95 }}
                       className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border"
                     >
                       <ThemeToggle/>
-                    </motion.button>
+                    </motion.div>
                   </div>
-                  <motion.button
+                  <motion.div
                     whileTap={{ scale: 0.95 }}
                     className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
                   >
-                    Get Started
-                  </motion.button>
+                    <Signin/>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>

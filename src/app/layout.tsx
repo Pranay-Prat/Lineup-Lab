@@ -27,7 +27,6 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`${outfit.variable} font-sans bg-background text-foreground`}>
-          {/* We have removed the extra props to fix the TypeScript error */}
           <ThemeProvider>
             <Navbar />
             <main>{children}</main>

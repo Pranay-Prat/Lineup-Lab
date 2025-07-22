@@ -13,4 +13,4 @@ export async function getUserById(clerkId: string) {
     console.error("Error fetching user:", error);
     return null;
   }
-}
+} 
