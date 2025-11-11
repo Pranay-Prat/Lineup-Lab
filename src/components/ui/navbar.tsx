@@ -27,13 +27,11 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Spacer to prevent content from hiding behind fixed navbar */}
       <div className="h-20" />
-
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.3, ease: "easeIn" }}
+        transition={{ duration: 0.2, ease: "easeIn" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
         }`}
@@ -67,8 +65,6 @@ const Navbar = () => {
                 )
               ))}
             </div>
-
-            {/* Center - Logo */}
             <motion.div
               whileTap={{ scale: 0.95 }}
               className="absolute left-1/2 transform -translate-x-1/2"
@@ -90,8 +86,6 @@ const Navbar = () => {
               </div>
                 <Signin/>
             </div>
-
-            {/* Mobile menu button */}
             <div className="md:hidden">
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -103,8 +97,6 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div

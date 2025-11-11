@@ -70,7 +70,7 @@ export const formations: Formation[]=[
       { id: 7, top: 50, left: 65, role: "RCM" },
       { id: 8, top: 50, left: 50, role: "CM" },
       { id: 9, top: 50, left: 35, role: "LCM" },
-      { id: 10, top: 50, left: 20, role: "LM" },
+      { id: 10, top: 50, left: 15, role: "LM" },
       { id: 11, top: 30, left: 50, role: "ST" },
     ],
   },

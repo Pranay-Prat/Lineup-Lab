@@ -6,17 +6,24 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { LoaderCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const Signin = () => {
   const { user, isLoaded } = useUser();
   const { openUserProfile, signOut } = useClerk();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const clickedInsideMenu = menuRef.current?.contains(target);
+      const clickedInsideButton = buttonRef.current?.contains(target);
+      
+      if (!clickedInsideMenu && !clickedInsideButton) {
         setMenuOpen(false);
       }
     }
@@ -34,6 +41,7 @@ const Signin = () => {
     return (
       <div className="relative">
         <motion.div
+          ref={buttonRef}
           whileTap={{ scale: 0.95 }}
           className="cursor-pointer"
           onClick={() => setMenuOpen(prev => !prev)}
@@ -44,8 +52,12 @@ const Signin = () => {
               alt={user.fullName || 'User profile image'}
               width={36}
               height={36}
-              className="rounded-full"
-              style={{ boxShadow: 'none', background: 'none' }}
+              style={{ 
+                width: '40px', 
+                height: '40px', 
+                borderRadius: '50%',
+                objectFit: 'cover'
+              }}
             />
           ) : (
             <span className="w-9 h-9 rounded-full flex items-center justify-center text-lg font-bold text-foreground bg-transparent">
@@ -63,7 +75,7 @@ const Signin = () => {
             </button>
             <button
               className="w-full text-left px-4 py-2 hover:bg-muted text-foreground font-medium"
-              onClick={() => { window.location.href = '/lineups/all'; setMenuOpen(false); }}
+              onClick={() => { router.push('/lineups/all'); setMenuOpen(false); }}
             >
               Saved Lineups
             </button>
