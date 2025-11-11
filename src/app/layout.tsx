@@ -1,3 +1,4 @@
+
 // app/layout.tsx
 
 import type { Metadata } from "next";
@@ -6,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { Outfit } from 'next/font/google';
 import Navbar from "@/components/ui/navbar";
+
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
   title: "Football Lineup Maker",
   description: "Create and customize your football lineup with ease",
 };
+
+
 
 export default function RootLayout({
   children,

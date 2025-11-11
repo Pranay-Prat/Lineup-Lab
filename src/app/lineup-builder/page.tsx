@@ -1,25 +1,46 @@
-"use client"
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { formations, Formation } from '@/lib/formations'
-import { playerColors, pitchColors } from '@/lib/colors'
-import { useLineupStore } from '@/store/lineupStore'
-import { Player } from '@/components/Player'
-import { ChevronDown, Palette, Save, Share2, Download } from 'lucide-react'
+"use client";
+import { useUser } from '@clerk/nextjs'
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { formations } from '@/lib/formations';
+import { playerColors, pitchColors } from '@/lib/colors';
+import { useLineupStore } from '@/store/lineupStore';
+import SoccerField from '@/components/SoccerField';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ChevronDown, Palette, Save, Share2, Download } from 'lucide-react';
+
+import { useRouter } from 'next/navigation';
 
 const LineupBuilderPage = () => {
+  const { isSignedIn } = useUser();
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
   const [isFormationOpen, setIsFormationOpen] = useState(false)
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false)
   const [isPitchColorPickerOpen, setIsPitchColorPickerOpen] = useState(false)
   const [teamName, setTeamName] = useState("My Team")
-  
-  const { players, selectedFormation, playerColor, pitchColor, setPlayers, setSelectedFormation, setPlayerColor, setPitchColor } = useLineupStore()
+  const { players, selectedFormationName, playerColor, pitchColor, setPlayers, setSelectedFormation, setPlayerColor, setPitchColor } = useLineupStore()
+  // Always get the latest formation object from formations.ts
+  const selectedFormation = formations.find(f => f.name === selectedFormationName) || formations[0];
+  // Ensure players are initialized on first load if empty and only if players are not already persisted
+  useEffect(() => {
+    // Only initialize if players are empty and there is no stored players in localStorage
+    if (!players || players.length === 0) {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('lineup-storage') : null;
+      if (!stored) {
+        const formation = formations.find(f => f.name === selectedFormationName) || formations[0];
+        setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
+      }
+    }
+  }, [setPlayers, selectedFormationName, players]);
 
-  const handleFormationChange = (formation: Formation) => {
-    setSelectedFormation(formation)
-    setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })))
-    setIsFormationOpen(false)
+  const handleFormationChange = (formationName: string) => {
+    const formation = formations.find(f => f.name === formationName) || formations[0];
+    setSelectedFormation(formation.name);
+    setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
+    setIsFormationOpen(false);
   }
 
   const handleColorChange = (color: typeof playerColors[number]['hex']) => {
@@ -32,10 +53,39 @@ const LineupBuilderPage = () => {
     setIsPitchColorPickerOpen(false)
   }
 
-  React.useEffect(() => {
-    // Always initialize players from selected formation
-    setPlayers(selectedFormation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })))
-  }, [selectedFormation, setPlayers])
+  const handleSaveLineup = async () => {
+    if (!isSignedIn) {
+      router.push('/sign-in');
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch('/api/lineups/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: teamName,
+          formationName: selectedFormation.name,
+          players,
+          background: pitchColor.value,
+          isPublic: false,
+          name: teamName,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Lineup saved!');
+      } else if (data?.error === 'Unauthorized') {
+        router.push('/sign-in');
+      } else {
+        alert('Failed to save lineup: ' + (data?.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Failed to save lineup.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background font-sans">
@@ -57,14 +107,19 @@ const LineupBuilderPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Field Display - Shows first on mobile, second on desktop */}
-          <div 
-            
-            className="lg:col-span-3 order-1 lg:order-2"
-          >
+          <div className="lg:col-span-3 order-1 lg:order-2">
             <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-semibold text-foreground">{teamName}</h3>
                 <div className="flex items-center space-x-4">
+                  <button
+                    onClick={handleSaveLineup}
+                    className="flex items-center px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 transition disabled:opacity-60"
+                    disabled={saving}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {saving ? 'Saving...' : 'Save Lineup'}
+                  </button>
                   <div className="text-sm text-foreground hidden lg:flex items-center px-3 py-1.5 bg-white/20 dark:bg-white/10 rounded-full border border-black/30 dark:border-white/20">
                     Formation: {selectedFormation.name}
                   </div>
@@ -78,7 +133,6 @@ const LineupBuilderPage = () => {
                       <span className="font-medium">{selectedFormation.name}</span>
                       <ChevronDown className={`w-4 h-4 transition-transform ${isFormationOpen ? 'rotate-180' : ''}`} />
                     </button>
-                    
                     {isFormationOpen && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
@@ -89,7 +143,7 @@ const LineupBuilderPage = () => {
                         {formations.map((formation) => (
                           <button
                             key={formation.name}
-                            onClick={() => handleFormationChange(formation)}
+                            onClick={() => handleFormationChange(formation.name)}
                             className={`w-full px-4 py-3 text-left hover:bg-accent transition-colors ${
                               formation.name === selectedFormation.name ? 'bg-accent' : ''
                             }`}
@@ -102,68 +156,10 @@ const LineupBuilderPage = () => {
                   </div>
                 </div>
               </div>
-              
               {/* Soccer Field */}
-              <div className="relative mx-auto" style={{ maxWidth: '600px', aspectRatio: '2/3' }}>
-                <div 
-                  className={`w-full h-full ${pitchColor.value} rounded-lg relative overflow-hidden shadow-lg`}
-                  style={{ 
-                    backgroundImage: `
-                      linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px),
-                      linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '50px 50px'
-                  }}
-                >
-                  {/* Field Lines */}
-                  <div className="absolute inset-0">
-                    {/* Outer Border */}
-                    <div className="absolute inset-2 border-2 border-white/60 rounded-lg" />
-                    
-                    {/* Center Circle */}
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 border-2 border-white/60 rounded-full" />
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/60 rounded-full" />
-                    
-                    {/* Halfway Line */}
-                    <div className="absolute top-1/2 left-2 right-2 h-0.5 bg-white/60" />
-                    
-                    {/* Penalty Areas (18-yard box) */}
-                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-56 h-28 border-2 border-white/60 border-t-0 rounded-b-md" />
-                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-56 h-28 border-2 border-white/60 border-b-0 rounded-t-md" />
-                    
-                    {/* Goal Areas (6-yard box) */}
-                    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-24 h-12 border-2 border-white/60 border-t-0 rounded-b-sm" />
-                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-12 border-2 border-white/60 border-b-0 rounded-t-sm" />
-                    
-                    {/* Penalty Spots */}
-                    <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-white/60 rounded-full" />
-                    <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-white/60 rounded-full" />
-                    
-                    {/* Corner Arcs */}
-                    <div className="absolute top-2 left-2 w-4 h-4 border-2 border-white/60 rounded-br-full border-t-0 border-l-0" />
-                    <div className="absolute top-2 right-2 w-4 h-4 border-2 border-white/60 rounded-bl-full border-t-0 border-r-0" />
-                    <div className="absolute bottom-2 left-2 w-4 h-4 border-2 border-white/60 rounded-tr-full border-b-0 border-l-0" />
-                    <div className="absolute bottom-2 right-2 w-4 h-4 border-2 border-white/60 rounded-tl-full border-b-0 border-r-0" />
-                    
-                    {/* Goals */}
-                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-12 h-2 bg-white/60 rounded-sm" />
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-12 h-2 bg-white/60 rounded-sm" />
-                  </div>
-                  
-                  {/* Players */}
-                  {players.map((player, index) => (
-                    
-                      <Player
-                        number={player.id}
-                        key={index}
-                        top={player.top}
-                        left={player.left}
-                        playerColor={playerColor}
-                      />
-                  
-                  ))}
-                </div>
-              </div>
+              <DndProvider backend={HTML5Backend}>
+                <SoccerField players={players} playerColor={playerColor} pitchColor={pitchColor} />
+              </DndProvider>
             </div>
           </div>
 
@@ -210,7 +206,6 @@ const LineupBuilderPage = () => {
                   </div>
                   <Palette className="w-4 h-4" />
                 </button>
-                
                 {isColorPickerOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -252,7 +247,6 @@ const LineupBuilderPage = () => {
                   </div>
                   <Palette className="w-4 h-4" />
                 </button>
-                
                 {isPitchColorPickerOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -315,7 +309,7 @@ const LineupBuilderPage = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default LineupBuilderPage

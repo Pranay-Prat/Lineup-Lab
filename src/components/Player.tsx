@@ -3,16 +3,17 @@ import { motion } from "framer-motion";
 
 type PlayerProps = {
   number: number;
-  top: number;   
-  left: number; 
   playerColor: PlayerColor;
+  top?: number;
+  left?: number;
 };
 
 export const Player: React.FC<PlayerProps> = ({ number, top, left, playerColor }) => {
+  const isAbsolute = typeof top === 'number' && typeof left === 'number';
   return (
     <motion.div
-      className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-      style={{ top: `${top}%`, left: `${left}%` }}
+      className={isAbsolute ? "absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group" : "cursor-pointer group"}
+      style={isAbsolute ? { top: `${top}%`, left: `${left}%` } : {}}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       initial={{ scale: 0 }}
