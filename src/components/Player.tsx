@@ -22,11 +22,11 @@ export const Player: React.FC<PlayerProps> = ({ number, top, left, playerColor }
     >
       {/* Player Circle */}
       <div
-        className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white shadow-lg flex items-center justify-center relative overflow-hidden group-hover:shadow-xl transition-all duration-200"
+        className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-white shadow-lg flex items-center justify-center relative overflow-hidden group-hover:shadow-xl transition-all duration-200"
         style={{ backgroundColor: playerColor }}
       >
         {/* Jersey Number */}
-        <span className="text-white font-bold text-xs md:text-sm select-none">{number}</span>
+        <span className="text-white font-bold text-sm md:text-base select-none">{number}</span>
 
         {/* Hover Effect */}
         <div className="absolute inset-0 bg-white/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-200" />

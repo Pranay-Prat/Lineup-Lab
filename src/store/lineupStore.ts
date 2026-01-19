@@ -24,8 +24,14 @@ export const useLineupStore = create<LineupStore>()(
       selectedFormationName: formations[0].name, // Default to first formation name
       playerColor: "#ef4444", // Default to red
       pitchColor: pitchColors[0], // Default to Classic Green
-  setPlayers: (players) => set({ players }),
-      setSelectedFormation: (formationName) => set({ selectedFormationName: formationName }),
+      setPlayers: (players) => set({ players }),
+      setSelectedFormation: (formationName) => {
+        const formation = formations.find(f => f.name === formationName) || formations[0];
+        set({
+          selectedFormationName: formationName,
+          players: formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` }))
+        });
+      },
       setPlayerColor: (color) => set({ playerColor: color }),
       setPitchColor: (color) => set({ pitchColor: color }),
       updatePlayerPosition: (id, top, left) => set((state) => ({

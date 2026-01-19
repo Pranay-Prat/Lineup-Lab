@@ -19,7 +19,7 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
   const updatePlayerName = useLineupStore((state) => state.updatePlayerName);
   const updatePlayerPosition = useLineupStore((state) => state.updatePlayerPosition);
   const draggingRef = React.useRef(false);
-  const offsetRef = React.useRef<{x: number, y: number}>({x: 0, y: 0});
+  const offsetRef = React.useRef<{ x: number, y: number }>({ x: 0, y: 0 });
 
   // Helper to get mouse/touch position relative to field
   const getRelativePosition = (clientX: number, clientY: number) => {
@@ -120,14 +120,16 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
         number={number}
         playerColor={playerColor}
       />
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => updatePlayerName(id, e.target.value)}
-        placeholder="Name"
-        className="mt-1 w-full rounded text-xs text-center"
-        style={{ marginTop: 4, background: "transparent", border: "none", outline: "none" }}
-      />
+      <span
+        className="mt-1 w-full rounded text-sm text-center text-white font-semibold truncate block"
+        style={{
+          marginTop: 4,
+          padding: "2px 4px",
+          textShadow: "0 1px 2px rgba(0, 0, 0, 0.8)",
+        }}
+      >
+        {name || ""}
+      </span>
     </div>
   );
 };
