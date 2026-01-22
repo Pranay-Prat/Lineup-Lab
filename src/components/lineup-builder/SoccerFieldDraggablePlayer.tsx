@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Player } from "@/components/Player";
+import { Player } from "@/components/lineup-builder/Player";
 import { PlayerColor } from "@/lib/colors";
 import { useLineupStore } from "@/store/lineupStore";
 

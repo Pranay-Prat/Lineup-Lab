@@ -23,37 +23,39 @@ export const RosterPanel: React.FC<RosterPanelProps> = ({ players, playerColor }
             transition={{ duration: 0.3, delay: 0.3 }}
             className="lg:col-span-3 order-3 lg:order-3"
         >
-            <div className="bg-card border-2 dark:border rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-md hover:border-border">
+                <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2 tracking-tight">
                     <Users className="w-5 h-5" />
                     Squad Roster
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                     {players.map((player) => {
                         const category = getRoleCategory(player.role);
                         return (
                             <div
                                 key={player.id}
-                                className="flex items-center gap-3 p-2 rounded-md bg-background/50 hover:bg-accent/50 transition-colors border border-border"
+                                className="group flex items-center gap-3 p-3 rounded-lg bg-background/40 hover:bg-accent/40 transition-all border border-transparent hover:border-border/50"
                             >
                                 {/* Player Number */}
                                 <div
-                                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0"
+                                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-sm ring-2 ring-white/10"
                                     style={{ backgroundColor: playerColor }}
                                 >
                                     {player.id}
                                 </div>
                                 {/* Player Info */}
                                 <div className="flex-1 min-w-0">
-                                    <input
-                                        type="text"
-                                        value={player.name || ''}
-                                        onChange={(e) => updatePlayerName(player.id, e.target.value)}
-                                        placeholder={`Player ${player.id}`}
-                                        className="w-full text-sm font-medium text-foreground bg-transparent border-b border-transparent hover:border-border focus:border-primary focus:outline-none transition-colors px-1 py-0.5"
-                                    />
-                                    <div className={`text-xs px-2 py-0.5 rounded-full inline-block border ${categoryColors[category]}`}>
-                                        {player.role}
+                                    <div className="flex items-center justify-between">
+                                        <input
+                                            type="text"
+                                            value={player.name || ''}
+                                            onChange={(e) => updatePlayerName(player.id, e.target.value)}
+                                            placeholder={`Player ${player.id}`}
+                                            className="w-full text-sm font-medium text-foreground bg-transparent border-none focus:ring-0 p-0 placeholder:text-muted-foreground/50"
+                                        />
+                                        <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full border opacity-70 group-hover:opacity-100 transition-opacity ${categoryColors[category]}`}>
+                                            {player.role}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

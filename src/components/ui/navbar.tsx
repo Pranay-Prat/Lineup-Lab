@@ -4,7 +4,6 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { ThemeToggle } from "../ThemeToggle"
-import Signin from "./Sign-In"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -20,9 +19,8 @@ const Navbar = () => {
   }, [])
 
   const navItems = [
-    { name: "About", href: "#", type: "a" },
-    { name: "Lineups", href: "/lineups/all", type: "link" },
-    { name: "Build", href: "/lineup-builder", type: "link" },
+    { name: "About", href: "#about", type: "a" },
+    { name: "Lineups", href: "/lineups/all", type: "link" }
   ]
 
   return (
@@ -32,9 +30,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.2, ease: "easeIn" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
           <div className="flex items-center justify-between h-20">
@@ -69,9 +66,9 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               className="absolute left-1/2 transform -translate-x-1/2"
             >
-                <Link href="/" className="text-2xl md:text-4xl font-bold text-foreground tracking-tight">
+              <Link href="/" className="text-2xl md:text-4xl font-bold text-foreground tracking-tight">
                 LineupLab
-                </Link>
+              </Link>
             </motion.div>
 
             <div className="hidden md:flex items-center space-x-4">
@@ -81,10 +78,10 @@ const Navbar = () => {
                   whileTap={{ scale: 0.95 }}
                   className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg"
                 >
-                  <ThemeToggle/>
+                  <ThemeToggle />
                 </motion.div>
               </div>
-                <Signin/>
+
             </div>
             <div className="md:hidden">
               <motion.button
@@ -141,14 +138,14 @@ const Navbar = () => {
                       whileTap={{ scale: 0.95 }}
                       className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border"
                     >
-                      <ThemeToggle/>
+                      <ThemeToggle />
                     </motion.div>
                   </div>
                   <motion.div
                     whileTap={{ scale: 0.95 }}
                     className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
                   >
-                    <Signin/>
+            
                   </motion.div>
                 </div>
               </div>

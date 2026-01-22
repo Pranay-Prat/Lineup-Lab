@@ -55,6 +55,12 @@ const SoccerField: React.FC<SoccerFieldProps> = ({ players, playerColor, pitchCo
             <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-12 h-2 bg-white/60 rounded-sm" />
           </div>
         </div>
+        {/* Watermark */}
+        <div className="absolute bottom-4 right-4 z-0 pointer-events-none opacity-50">
+          <span className="text-white/80 font-bold text-sm tracking-widest uppercase drop-shadow-md font-sans">
+            lineuplab
+          </span>
+        </div>
         {/* Players (z-10, above overlays) */}
         <div className="relative z-10 w-full h-full">
           {players.map((player, index) => (

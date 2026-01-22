@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { formations } from '@/lib/formations';
 import { useLineupStore } from '@/store/lineupStore';
 import { useExport } from '@/hooks/useExport';
-import { PitchPanel } from '@/components/PitchPanel';
-import { RosterPanel } from '@/components/RosterPanel';
-import { StatsPanel } from '@/components/StatsPanel';
+import { PitchPanel } from '@/components/lineup-builder/PitchPanel';
+import { RosterPanel } from '@/components/lineup-builder/RosterPanel';
+import { StatsPanel } from '@/components/lineup-builder/StatsPanel';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { TeamDetailsCard } from '@/components/lineup-builder/TeamDetailsCard';
 import { ActionsPanel } from '@/components/lineup-builder/ActionsPanel';
@@ -38,8 +38,21 @@ const LineupBuilderPage = () => {
   }, [setPlayers, selectedFormationName, players]);
 
   return (
-    <div className="min-h-screen bg-background font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background font-sans relative overflow-hidden">
+      {/* Background Grid Pattern */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30 pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(var(--foreground) 1px, transparent 1px),
+            linear-gradient(90deg, var(--foreground) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px'
+        }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <PageHeader
           title="Lineup Builder"

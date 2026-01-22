@@ -15,18 +15,20 @@ export const TeamDetailsCard: React.FC<TeamDetailsCardProps> = ({
     onTeamNameChange
 }) => {
     return (
-        <div className="bg-card border-2 dark:border rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Team Details</h3>
+        <div className="bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-md hover:border-border">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                Team Details
+            </h3>
             <div className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-xs uppercase tracking-wider font-medium text-muted-foreground mb-1.5">
                         Team Name
                     </label>
                     <input
                         type="text"
                         value={teamName}
                         onChange={(e) => onTeamNameChange(e.target.value)}
-                        className="w-full px-3 py-2 bg-background border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        className="w-full px-4 py-2.5 bg-background/50 border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all duration-200"
                         placeholder="Enter team name"
                     />
                 </div>

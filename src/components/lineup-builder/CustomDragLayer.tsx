@@ -1,6 +1,6 @@
 import React from "react";
 import { useDragLayer } from "react-dnd";
-import { Player } from "@/components/Player";
+import { Player } from "@/components/lineup-builder/Player";
 import { useLineupStore } from "@/store/lineupStore";
 
 const layerStyles: React.CSSProperties = {
@@ -41,7 +41,7 @@ export const CustomDragLayer: React.FC = () => {
   return (
     <div style={layerStyles}>
       <div style={getItemStyles(currentOffset)}>
-  <Player number={player.id} playerColor={playerColor} />
+        <Player number={player.id} playerColor={playerColor} />
         {player.name && (
           <div style={{ marginTop: 4, color: "white", textAlign: "center", fontSize: 12 }}>{player.name}</div>
         )}
