@@ -6,7 +6,7 @@ import { Palette, Shield, Compass, Target } from "lucide-react";
 import { PlayerPositions } from "@/lib/formations";
 import { playerColors, pitchColors } from "@/lib/colors";
 import { useLineupStore } from "@/store/lineupStore";
-import { getRoleCategory } from "@/lib/player-utils";
+import { getZoneFromPosition } from "@/lib/player-utils";
 
 
 type StatsPanelProps = {
@@ -40,23 +40,23 @@ export const StatsPanel: React.FC<StatsPanelProps> = ({ players }) => {
                     <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-3 text-center transition-transform hover:scale-105">
                         <Shield className="w-5 h-5 mx-auto mb-2 text-blue-500" />
                         <div className="text-2xl font-bold text-blue-500 mb-1">
-                            {players.filter(p => getRoleCategory(p.role) === 'DEF').length}
+                            {players.filter(p => p.role !== 'GK' && getZoneFromPosition(p.top) === 'DEF').length}
                         </div>
                         <div className="text-[10px] font-bold text-blue-500/70 tracking-wider">DEF</div>
                     </div>
                     <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3 text-center transition-transform hover:scale-105">
                         <Compass className="w-5 h-5 mx-auto mb-2 text-green-500" />
                         <div className="text-2xl font-bold text-green-500 mb-1">
-                            {players.filter(p => getRoleCategory(p.role) === 'MID').length}
+                            {players.filter(p => p.role !== 'GK' && getZoneFromPosition(p.top) === 'MID').length}
                         </div>
                         <div className="text-[10px] font-bold text-green-500/70 tracking-wider">MID</div>
                     </div>
                     <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-3 text-center transition-transform hover:scale-105">
                         <Target className="w-5 h-5 mx-auto mb-2 text-red-500" />
                         <div className="text-2xl font-bold text-red-500 mb-1">
-                            {players.filter(p => getRoleCategory(p.role) === 'FWD').length}
+                            {players.filter(p => p.role !== 'GK' && getZoneFromPosition(p.top) === 'ATT').length}
                         </div>
-                        <div className="text-[10px] font-bold text-red-500/70 tracking-wider">FWD</div>
+                        <div className="text-[10px] font-bold text-red-500/70 tracking-wider">ATT</div>
                     </div>
                 </div>
             </div>

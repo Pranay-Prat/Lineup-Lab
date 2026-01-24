@@ -121,11 +121,12 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
         playerColor={playerColor}
       />
       <span
-        className="mt-1 w-full rounded text-sm text-center text-white font-semibold truncate block"
+        className="mt-1 w-full rounded text-[10px] text-center text-white font-semibold block leading-tight"
         style={{
           marginTop: 4,
           padding: "2px 4px",
           textShadow: "0 1px 2px rgba(0, 0, 0, 0.8)",
+          wordBreak: "break-word",
         }}
       >
         {name || ""}

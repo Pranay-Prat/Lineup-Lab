@@ -28,7 +28,7 @@ export const RosterPanel: React.FC<RosterPanelProps> = ({ players, playerColor }
                     <Users className="w-5 h-5" />
                     Squad Roster
                 </h3>
-                <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-2">
                     {players.map((player) => {
                         const category = getRoleCategory(player.role);
                         return (

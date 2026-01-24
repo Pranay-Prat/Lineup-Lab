@@ -33,7 +33,7 @@ export const ActionsPanel: React.FC<ActionsPanelProps> = ({
             <div className="grid grid-cols-2 gap-3">
                 <button
                     onClick={onSave}
-                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-sm"
+                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 shadow-sm"
                 >
                     <Save className="w-4 h-4" />
                     <span className="font-medium">Save</span>
@@ -41,7 +41,7 @@ export const ActionsPanel: React.FC<ActionsPanelProps> = ({
 
                 <button
                     onClick={onShare}
-                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-secondary text-secondary-foreground border border-border/50 rounded-lg hover:bg-secondary/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                    className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-secondary text-secondary-foreground border border-border/50 rounded-lg hover:bg-secondary/80 transition-colors duration-200"
                 >
                     <Share2 className="w-4 h-4" />
                     <span className="font-medium">Share</span>

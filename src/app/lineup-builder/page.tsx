@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { formations } from '@/lib/formations';
 import { useLineupStore } from '@/store/lineupStore';
 import { useExport } from '@/hooks/useExport';
+import { generateShareableUrl, copyToClipboard } from '@/lib/lineup-utils';
 import { PitchPanel } from '@/components/lineup-builder/PitchPanel';
 import { RosterPanel } from '@/components/lineup-builder/RosterPanel';
 import { StatsPanel } from '@/components/lineup-builder/StatsPanel';
@@ -14,8 +15,9 @@ import { ActionsPanel } from '@/components/lineup-builder/ActionsPanel';
 
 const LineupBuilderPage = () => {
   const [teamName, setTeamName] = useState("My Team");
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const pitchRef = useRef<HTMLDivElement>(null);
-  const { players, selectedFormationName, playerColor, setPlayers } = useLineupStore();
+  const { players, selectedFormationName, playerColor, pitchColor, setPlayers } = useLineupStore();
 
   // Use custom export hook
   const {
@@ -37,6 +39,26 @@ const LineupBuilderPage = () => {
     }
   }, [setPlayers, selectedFormationName, players]);
 
+  // Handle share button click
+  const handleShare = async () => {
+    const shareableUrl = generateShareableUrl({
+      teamName,
+      formationName: selectedFormationName,
+      players,
+      playerColor,
+      pitchColor,
+    });
+
+    const success = await copyToClipboard(shareableUrl);
+    if (success) {
+      setShareStatus('copied');
+      setTimeout(() => setShareStatus('idle'), 2000);
+    } else {
+      setShareStatus('error');
+      setTimeout(() => setShareStatus('idle'), 2000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background font-sans relative overflow-hidden">
       {/* Background Grid Pattern */}
@@ -51,6 +73,21 @@ const LineupBuilderPage = () => {
           backgroundSize: '60px 60px'
         }}
       />
+
+      {/* Share Status Toast */}
+      {shareStatus !== 'idle' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg ${shareStatus === 'copied'
+            ? 'bg-green-500 text-white'
+            : 'bg-red-500 text-white'
+            }`}
+        >
+          {shareStatus === 'copied' ? '✓ Link copied to clipboard!' : '✗ Failed to copy link'}
+        </motion.div>
+      )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -86,6 +123,7 @@ const LineupBuilderPage = () => {
               onToggleExport={toggleExportOpen}
               onExportPng={handleExportPng}
               onExportSvg={handleExportSvg}
+              onShare={handleShare}
             />
           </motion.div>
 
