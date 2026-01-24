@@ -1,7 +1,7 @@
 import Script from 'next/script';
 
 interface JsonLdProps {
-    type?: 'website' | 'webapp' | 'organization';
+    type?: 'website' | 'webapp';
 }
 
 export function JsonLd({ type = 'webapp' }: JsonLdProps) {
@@ -45,36 +45,16 @@ export function JsonLd({ type = 'webapp' }: JsonLdProps) {
             'Mobile responsive design',
             'Dark and light themes',
         ],
-        screenshot: `${baseUrl}/og-image.png`, // Uses the generated OG image as fallback
-        aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.8',
-            ratingCount: '150',
-        },
-    };
-
-    const organizationSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: 'Lineup Lab',
-        url: baseUrl,
-        logo: `${baseUrl}/icon-512.png`,
-        sameAs: [
-            // Add your social media URLs
-            // 'https://twitter.com/lineuplab',
-            // 'https://facebook.com/lineuplab',
-        ],
+        screenshot: `${baseUrl}/og-image.png`,
     };
 
     const getSchema = () => {
         switch (type) {
             case 'website':
                 return websiteSchema;
-            case 'organization':
-                return organizationSchema;
             case 'webapp':
             default:
-                return [websiteSchema, webAppSchema, organizationSchema];
+                return [websiteSchema, webAppSchema];
         }
     };
 
