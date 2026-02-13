@@ -19,16 +19,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.9,
         },
         {
-            url: `${baseUrl}/lineups`,
+            url: `${baseUrl}/lineups/all`,
             lastModified: currentDate,
             changeFrequency: 'daily',
             priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/dashboard`,
-            lastModified: currentDate,
-            changeFrequency: 'weekly',
-            priority: 0.7,
         },
     ];
 }
