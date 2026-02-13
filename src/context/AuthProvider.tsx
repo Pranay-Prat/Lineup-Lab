@@ -75,10 +75,19 @@ export default function AuthProvider({
     // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user ?? null);
       setIsLoading(false);
+
+      // Sync user to Prisma DB on sign in
+      if (_event === "SIGNED_IN" && newSession?.user) {
+        try {
+          await fetch("/api/auth/sync-user", { method: "POST" });
+        } catch (error) {
+          console.error("Error syncing user:", error);
+        }
+      }
     });
 
     return () => {

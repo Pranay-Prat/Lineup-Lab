@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { formations } from '@/lib/formations';
 import { useLineupStore } from '@/store/lineupStore';
 import { useExport } from '@/hooks/useExport';
+import { useAuth } from '@/context/AuthProvider';
 import { generateShareableUrl, copyToClipboard } from '@/lib/lineup-utils';
 import { PitchPanel } from '@/components/lineup-builder/PitchPanel';
 import { RosterPanel } from '@/components/lineup-builder/RosterPanel';
@@ -16,8 +18,11 @@ import { ActionsPanel } from '@/components/lineup-builder/ActionsPanel';
 const LineupBuilderPage = () => {
   const [teamName, setTeamName] = useState("My Team");
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const pitchRef = useRef<HTMLDivElement>(null);
   const { players, selectedFormationName, playerColor, pitchColor, setPlayers } = useLineupStore();
+  const { user } = useAuth();
+  const router = useRouter();
 
   // Use custom export hook
   const {
@@ -38,6 +43,40 @@ const LineupBuilderPage = () => {
       }
     }
   }, [setPlayers, selectedFormationName, players]);
+
+  // Handle save button click
+  const handleSave = async () => {
+    if (!user) {
+      router.push('/auth');
+      return;
+    }
+
+    setSaveStatus('saving');
+    try {
+      const res = await fetch('/api/lineups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: teamName,
+          formationName: selectedFormationName,
+          players,
+          background: pitchColor?.label || 'Classic Green',
+          isPublic: false,
+        }),
+      });
+
+      if (res.ok) {
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      } else {
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      }
+    } catch {
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    }
+  };
 
   // Handle share button click
   const handleShare = async () => {
@@ -74,7 +113,7 @@ const LineupBuilderPage = () => {
         }}
       />
 
-      {/* Share Status Toast */}
+      {/* Status Toasts */}
       {shareStatus !== 'idle' && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -86,6 +125,19 @@ const LineupBuilderPage = () => {
             }`}
         >
           {shareStatus === 'copied' ? '✓ Link copied to clipboard!' : '✗ Failed to copy link'}
+        </motion.div>
+      )}
+      {saveStatus !== 'idle' && saveStatus !== 'saving' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg ${saveStatus === 'saved'
+            ? 'bg-green-500 text-white'
+            : 'bg-red-500 text-white'
+            }`}
+        >
+          {saveStatus === 'saved' ? '✓ Lineup saved!' : '✗ Failed to save lineup'}
         </motion.div>
       )}
 
@@ -123,6 +175,7 @@ const LineupBuilderPage = () => {
               onToggleExport={toggleExportOpen}
               onExportPng={handleExportPng}
               onExportSvg={handleExportSvg}
+              onSave={handleSave}
               onShare={handleShare}
             />
           </motion.div>

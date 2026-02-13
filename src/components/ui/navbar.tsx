@@ -1,13 +1,17 @@
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, LogOut, User } from "lucide-react"
 import { ThemeToggle } from "../ThemeToggle"
+import { useAuth } from "@/context/AuthProvider"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, isLoading, signOut } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +21,12 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/")
+    router.refresh()
+  }
 
   const navItems = [
     { name: "About", href: "#about", type: "a" },
@@ -71,18 +81,55 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            <div className="hidden md:flex items-center space-x-4">
-              <div className="theme-toggle-placeholder">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg"
-                >
-                  <ThemeToggle />
-                </motion.div>
-              </div>
+            {/* Right - Theme Toggle + Auth */}
+            <div className="hidden md:flex items-center space-x-3">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg"
+              >
+                <ThemeToggle />
+              </motion.div>
 
+              {/* Auth Buttons */}
+              {!isLoading && (
+                <>
+                  {user ? (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold uppercase">
+                          {(user.user_metadata?.full_name?.[0] || user.email?.[0] || "U")}
+                        </div>
+                        <span className="text-sm font-medium text-foreground max-w-[140px] truncate">
+                          {user.user_metadata?.full_name || user.email}
+                        </span>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleSignOut}
+                        className="p-2 text-muted-foreground hover:text-destructive transition-colors duration-200 rounded-lg"
+                        title="Sign Out"
+                      >
+                        <LogOut className="w-4 h-4" />
+                      </motion.button>
+                    </div>
+                  ) : (
+                    <Link href="/auth">
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="px-5 py-2 bg-primary text-primary-foreground rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors duration-200 shadow-sm"
+                      >
+                        Sign In
+                      </motion.button>
+                    </Link>
+                  )}
+                </>
+              )}
             </div>
+
+            {/* Mobile Menu Button */}
             <div className="md:hidden">
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -94,6 +141,8 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -141,12 +190,41 @@ const Navbar = () => {
                       <ThemeToggle />
                     </motion.div>
                   </div>
-                  <motion.div
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-                  >
-            
-                  </motion.div>
+
+                  {/* Mobile Auth */}
+                  {!isLoading && (
+                    <>
+                      {user ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3 px-3 py-2.5 bg-muted/50 rounded-lg border border-border/30">
+                            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold uppercase shrink-0">
+                              {(user.user_metadata?.full_name?.[0] || user.email?.[0] || "U")}
+                            </div>
+                            <span className="text-sm font-medium text-foreground truncate">
+                              {user.user_metadata?.full_name || user.email}
+                            </span>
+                          </div>
+                          <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}
+                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-destructive/10 text-destructive rounded-lg font-medium hover:bg-destructive/20 transition-colors"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            <span>Sign Out</span>
+                          </motion.button>
+                        </div>
+                      ) : (
+                        <Link href="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                          <motion.div
+                            whileTap={{ scale: 0.95 }}
+                            className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors text-center"
+                          >
+                            Sign In
+                          </motion.div>
+                        </Link>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

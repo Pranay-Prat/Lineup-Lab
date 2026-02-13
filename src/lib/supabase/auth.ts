@@ -1,6 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { createClient as createBrowserClient } from "@/lib/supabase/client";
-
 
 // ─── Server-side helpers ───────────────────────────────────────────
 
@@ -41,7 +39,7 @@ export async function getUser() {
 
 /**
  * Require authentication (server-side).
- * Returns the user or throws a redirect to the home page.
+ * Returns the user or throws an error.
  */
 export async function requireAuth() {
   const user = await getUser();
@@ -49,45 +47,4 @@ export async function requireAuth() {
     throw new Error("Authentication required");
   }
   return user;
-}
-
-// ─── Client-side helpers ───────────────────────────────────────────
-
-
-
-/**
- * Sign in with email and password.
- */
-export function signInWithEmail(email: string, password: string) {
-  const supabase = createBrowserClient();
-  return supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-}
-
-/**
- * Sign up with email and password.
- */
-export function signUp(email: string, password: string) {
-  const supabase = createBrowserClient();
-  return supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${window.location.origin}/auth/callback`,
-    },
-  });
-}
-
-/**
- * Sign out the current user.
- */
-export async function signOut() {
-  const supabase = createBrowserClient();
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Error signing out:", error.message);
-    throw error;
-  }
 }
