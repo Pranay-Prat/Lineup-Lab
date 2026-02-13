@@ -194,12 +194,12 @@ export const formations: Formation[]=[
       { id: 3, top: 75, left: 65, role: "RCB" },
       { id: 4, top: 75, left: 35, role: "LCB" },
       { id: 5, top: 75, left: 15, role: "LB" },
-      { id: 6, top: 55, left: 60, role: "CDM" },
-      { id: 7, top: 55, left: 40, role: "CDM" },
+      { id: 6, top: 55, left: 65, role: "CDM" },
+      { id: 7, top: 55, left: 35, role: "CDM" },
       { id: 8, top: 37, left: 80, role: "RAM" },
-      { id: 9, top: 37, left: 50, role: "CAM" },
-      { id: 10, top: 37, left: 20, role: "LAM" },
-      { id: 11, top: 20, left: 50, role: "ST" },
+      { id: 10, top: 37, left: 50, role: "CAM" },
+      { id: 11, top: 37, left: 20, role: "LAM" },
+      { id: 9, top: 20, left: 50, role: "ST" },
     ],
   }
 ]

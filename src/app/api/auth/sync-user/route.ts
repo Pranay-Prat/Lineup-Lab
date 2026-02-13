@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { upsertUser } from "@/lib/db/userService";
+import { rateLimit } from "@/lib/rate-limit";
 
 /**
  * POST /api/auth/sync-user
@@ -21,17 +22,20 @@ export async function POST() {
       );
     }
 
+    // Rate limit: 5 syncs per minute per user
+    const rateLimited = rateLimit(`sync-user:${user.id}`, 5, 60_000);
+    if (rateLimited) return rateLimited;
+
     // Upsert the user in Prisma using Supabase auth data
-    const dbUser = await upsertUser({
+    await upsertUser({
       id: user.id,
       email: user.email,
       name: user.user_metadata?.full_name || user.user_metadata?.name || null,
       image: user.user_metadata?.avatar_url || null,
     });
 
-    return NextResponse.json({ user: dbUser }, { status: 200 });
-  } catch (error) {
-    console.error("Error syncing user:", error);
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch {
     return NextResponse.json(
       { error: "Failed to sync user" },
       { status: 500 }

@@ -8,6 +8,7 @@ import {
   useCallback,
 } from "react";
 import { createClient } from "@/lib/supabase/client";
+import axios from "axios";
 import type { User, Session } from "@supabase/supabase-js";
 
 type AuthContextType = {
@@ -83,7 +84,7 @@ export default function AuthProvider({
       // Sync user to Prisma DB on sign in
       if (_event === "SIGNED_IN" && newSession?.user) {
         try {
-          await fetch("/api/auth/sync-user", { method: "POST" });
+          await axios.post("/api/auth/sync-user");
         } catch (error) {
           console.error("Error syncing user:", error);
         }

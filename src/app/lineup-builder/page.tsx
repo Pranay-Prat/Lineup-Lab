@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { formations } from '@/lib/formations';
 import { useLineupStore } from '@/store/lineupStore';
 import { useExport } from '@/hooks/useExport';
 import { useAuth } from '@/context/AuthProvider';
+import axios from 'axios';
 import { generateShareableUrl, copyToClipboard } from '@/lib/lineup-utils';
 import { PitchPanel } from '@/components/lineup-builder/PitchPanel';
 import { RosterPanel } from '@/components/lineup-builder/RosterPanel';
@@ -20,9 +21,12 @@ const LineupBuilderPage = () => {
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const pitchRef = useRef<HTMLDivElement>(null);
-  const { players, selectedFormationName, playerColor, pitchColor, setPlayers } = useLineupStore();
+  const { players, selectedFormationName, playerColor, pitchColor, setPlayers, setSelectedFormation } = useLineupStore();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const loadId = searchParams.get('load');
+  const isNew = searchParams.get('new') === 'true';
 
   // Use custom export hook
   const {
@@ -33,8 +37,39 @@ const LineupBuilderPage = () => {
     handleExportSvg,
   } = useExport(pitchRef, teamName);
 
+  // Load a saved lineup if ?load=<id> is in the URL
+  useEffect(() => {
+    if (!loadId) return;
+
+    const loadLineup = async () => {
+      try {
+        const { data } = await axios.get(`/api/lineups/${loadId}`);
+          const { lineup } = data;
+          if (lineup.title) setTeamName(lineup.title);
+          if (lineup.formationName) setSelectedFormation(lineup.formationName);
+          if (Array.isArray(lineup.players)) {
+            setPlayers(lineup.players);
+          }
+      } catch (error) {
+        console.error('Error loading lineup:', error);
+      }
+    };
+
+    loadLineup();
+  }, [loadId, setPlayers, setSelectedFormation]);
+
+  // Reset store for a fresh lineup if ?new=true
+  useEffect(() => {
+    if (!isNew) return;
+    const formation = formations[0];
+    setTeamName('My Team');
+    setSelectedFormation(formation.name);
+    setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
+  }, [isNew, setPlayers, setSelectedFormation]);
+
   // Initialize players on first load if empty
   useEffect(() => {
+    if (loadId || isNew) return; // Skip if loading a saved lineup or creating new
     if (!players || players.length === 0) {
       const stored = typeof window !== 'undefined' ? localStorage.getItem('lineup-storage') : null;
       if (!stored) {
@@ -42,7 +77,7 @@ const LineupBuilderPage = () => {
         setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
       }
     }
-  }, [setPlayers, selectedFormationName, players]);
+  }, [setPlayers, selectedFormationName, players, loadId, isNew]);
 
   // Handle save button click
   const handleSave = async () => {
@@ -53,19 +88,15 @@ const LineupBuilderPage = () => {
 
     setSaveStatus('saving');
     try {
-      const res = await fetch('/api/lineups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: teamName,
-          formationName: selectedFormationName,
-          players,
-          background: pitchColor?.label || 'Classic Green',
-          isPublic: false,
-        }),
+      const { status } = await axios.post('/api/lineups', {
+        title: teamName,
+        formationName: selectedFormationName,
+        players,
+        background: pitchColor?.label || 'Classic Green',
+        isPublic: false,
       });
 
-      if (res.ok) {
+      if (status === 201) {
         setSaveStatus('saved');
         setTimeout(() => setSaveStatus('idle'), 2000);
       } else {
