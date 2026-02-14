@@ -5,7 +5,7 @@ interface JsonLdProps {
 }
 
 export function JsonLd({ type = 'webapp' }: JsonLdProps) {
-    const baseUrl = 'https://lineup-lab.vercel.app'; // Update with your actual domain
+    const baseUrl = 'https://football-lineup-maker.vercel.app';
 
     const websiteSchema = {
         '@context': 'https://schema.org',

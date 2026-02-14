@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const baseUrl = 'https://lineup-lab.vercel.app'; // Update with your actual domain
+const baseUrl = 'https://football-lineup-maker.vercel.app'; 
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const currentDate = new Date();
