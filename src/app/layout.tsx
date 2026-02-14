@@ -19,7 +19,7 @@ const outfit = Outfit({
 const siteConfig = {
   name: "Lineup Lab",
   description: "Create stunning football lineups with our intuitive drag-and-drop builder. Design custom formations, add player names, export high-quality images, and share your tactical masterpieces with the world.",
-  url: "https://football-lineup-maker.vercel.app/", 
+  url: "https://football-lineup-maker.vercel.app", 
 
   keywords: [
     "lineup lab",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    creator: "@lineuplab", // Update with your Twitter handle
+    creator: "@lineuplab", 
   },
 
   // Robots
