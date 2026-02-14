@@ -62,13 +62,21 @@ export const metadata: Metadata = {
 
   // Open Graph (Facebook, LinkedIn, etc.)
   openGraph: {
-  type: "website",
-  locale: "en_US",
-  url: siteConfig.url,
-  title: siteConfig.name,
-  description: siteConfig.description,
-  siteName: siteConfig.name,
-},
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Lineup Lab Preview",
+      },
+    ],
+  },
 
 
   // Twitter Card
@@ -77,6 +85,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     creator: "@lineuplab", // Update with your Twitter handle
+    images: ["/twitter-image"], 
   },
 
 
