@@ -109,7 +109,7 @@ const Navbar = () => {
                   transition={{ delay: 1, duration: 0.5, type: "spring" }}
                   className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-1 rounded-md whitespace-nowrap shadow-lg pointer-events-none"
                 >
-                  Don't forget to star!
+                  Don&apos;t forget to star!
                   <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rotate-45" />
                 </motion.div>
               </Link>
