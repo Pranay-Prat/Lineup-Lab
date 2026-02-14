@@ -26,7 +26,7 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
     const rect = fieldRef.current.getBoundingClientRect();
     const relX = ((clientX - rect.left) / rect.width) * 100;
     const relY = ((clientY - rect.top) / rect.height) * 100;
-    return { top: Math.max(0, Math.min(100, relY)), left: Math.max(0, Math.min(100, relX)) };
+    return { top: Math.max(0, Math.min(92, relY)), left: Math.max(0, Math.min(100, relX)) };
   };
 
   // Mouse events
@@ -57,9 +57,9 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
     window.removeEventListener('mouseup', onMouseUp);
   };
 
-  // Touch events
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     if (e.touches.length !== 1) return;
+    e.preventDefault();
     draggingRef.current = true;
     const touch = e.touches[0];
     const startX = touch.clientX;
@@ -71,11 +71,12 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
         y: startY - (rect.top + (top / 100) * rect.height),
       };
     }
-    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('touchend', onTouchEnd);
   };
   const onTouchMove = (e: TouchEvent) => {
     if (!draggingRef.current || e.touches.length !== 1) return;
+    e.preventDefault();
     const { x, y } = offsetRef.current;
     const touch = e.touches[0];
     const pos = getRelativePosition(touch.clientX - x, touch.clientY - y);
@@ -101,12 +102,13 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
     <div
       style={{
         position: "absolute",
-        top: `${top}%`,
+        top: `${Math.min(top, 92)}%`,
         left: `${left}%`,
         transform: "translate(-50%, -50%)",
         cursor: "grab",
+        touchAction: "none",
         zIndex: 10,
-        width: 60,
+        width: 80,
         textAlign: "center",
         display: "flex",
         flexDirection: "column",
@@ -120,7 +122,7 @@ export const DraggablePlayer: React.FC<DraggablePlayerProps> = ({ id, top, left,
         playerColor={playerColor}
       />
       <span
-        className="mt-1 w-full rounded text-xs text-center text-white font-semibold block leading-tight"
+        className="mt-1 w-full rounded text-xs md:text-sm text-center text-white font-semibold block leading-tight"
         style={{
           marginTop: 4,
           padding: "2px 4px",

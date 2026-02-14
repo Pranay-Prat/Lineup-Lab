@@ -40,7 +40,7 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.2, ease: "easeIn" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
+        className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
@@ -105,8 +105,17 @@ const Navbar = () => {
                 {/* Notification Badge */}
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ delay: 1, duration: 0.5, type: "spring" }}
+                  animate={{ 
+                    opacity: [0, 1, 1, 0],
+                    y: [10, 0, 0, -5],
+                    scale: [0.8, 1, 1, 0.8],
+                  }}
+                  transition={{ 
+                    duration: 4,
+                    times: [0, 0.15, 0.75, 1],
+                    repeat: Infinity,
+                    repeatDelay: 4,
+                  }}
                   className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-1 rounded-md whitespace-nowrap shadow-lg pointer-events-none"
                 >
                   Don&apos;t forget to star!

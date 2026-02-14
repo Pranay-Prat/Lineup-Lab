@@ -150,7 +150,7 @@ const LineupBuilderPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg ${shareStatus === 'copied'
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-lg shadow-lg ${shareStatus === 'copied'
             ? 'bg-green-500 text-white'
             : 'bg-red-500 text-white'
             }`}
@@ -163,7 +163,7 @@ const LineupBuilderPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg shadow-lg ${saveStatus === 'saved'
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-lg shadow-lg ${saveStatus === 'saved'
             ? 'bg-green-500 text-white'
             : 'bg-red-500 text-white'
             }`}

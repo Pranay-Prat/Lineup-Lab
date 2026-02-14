@@ -13,7 +13,7 @@ export const ReadOnlyPlayer: React.FC<ReadOnlyPlayerProps> = ({ player, playerCo
         <div
             className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
             style={{
-                top: `${player.top}%`,
+                top: `${Math.min(player.top, 92)}%`,
                 left: `${player.left}%`,
             }}
         >

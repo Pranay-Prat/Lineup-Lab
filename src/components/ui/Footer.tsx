@@ -12,7 +12,7 @@ const socialLinks = [
   },
   {
     name: "X (Twitter)",
-    href: "https://x.com/pranay_prat",
+    href: "https://x.com/PranayPrat",
     icon: () => (
       <svg
         viewBox="0 0 24 24"
@@ -26,7 +26,7 @@ const socialLinks = [
   },
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/pranay-pratap-singh-a6348a284",
+    href: "https://www.linkedin.com/in/pranay-pratap15",
     icon: Linkedin,
   },
 ]
