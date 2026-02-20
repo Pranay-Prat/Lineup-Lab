@@ -44,5 +44,5 @@ export const pitchColors = [
   },
 ];
 
-export type PlayerColor = typeof playerColors[number]['hex'];
-export type PitchColor = typeof pitchColors[number];
+// Types are re-exported from the centralized types file
+export type { PlayerColor, PitchColor } from "@/lib/types";

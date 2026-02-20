@@ -3,20 +3,10 @@
  * Uses pako deflate compression + compact keys for shorter URLs
  */
 
-import { PlayerPositions } from "./formations";
+import type { PlayerPositions, ShareableLineupData } from "@/lib/types";
 import { deflate, inflate } from "pako";
 
-export type ShareableLineupData = {
-    teamName: string;
-    formationName: string;
-    players: PlayerPositions[];
-    playerColor: string;
-    pitchColor: {
-        label: string;
-        value: string;
-        previewClass: string;
-    };
-};
+export type { ShareableLineupData } from "@/lib/types";
 
 /**
  * Compact data format with short keys to minimize JSON size
@@ -27,6 +17,7 @@ type CompactPlayer = {
     l: number;   // left
     r: string;   // role
     n?: string;  // name
+    nu?: number; // number (jersey)
 };
 
 type CompactData = {
@@ -48,6 +39,7 @@ const toCompact = (data: ShareableLineupData): CompactData => ({
     p: data.players.map(pl => {
         const cp: CompactPlayer = { i: pl.id, t: pl.top, l: pl.left, r: pl.role };
         if (pl.name) cp.n = pl.name;
+        if (pl.number !== undefined) cp.nu = pl.number;
         return cp;
     }),
     c: data.playerColor,
@@ -64,6 +56,7 @@ const fromCompact = (compact: CompactData): ShareableLineupData => ({
         left: cp.l,
         role: cp.r,
         name: cp.n,
+        number: cp.nu,
     })),
     playerColor: compact.c,
     pitchColor: { label: compact.pc.l, value: compact.pc.v, previewClass: compact.pc.p },

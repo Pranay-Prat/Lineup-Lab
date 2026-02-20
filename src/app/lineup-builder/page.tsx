@@ -64,7 +64,7 @@ const LineupBuilderPage = () => {
     const formation = formations[0];
     setTeamName('My Team');
     setSelectedFormation(formation.name);
-    setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
+    setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}`, number: pos.id })));
   }, [isNew, setPlayers, setSelectedFormation]);
 
   // Initialize players on first load if empty
@@ -74,7 +74,7 @@ const LineupBuilderPage = () => {
       const stored = typeof window !== 'undefined' ? localStorage.getItem('lineup-storage') : null;
       if (!stored) {
         const formation = formations.find(f => f.name === selectedFormationName) || formations[0];
-        setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` })));
+        setPlayers(formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}`, number: pos.id })));
       }
     }
   }, [setPlayers, selectedFormationName, players, loadId, isNew]);

@@ -8,6 +8,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { Outfit } from 'next/font/google';
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/Footer";
+import { Toaster } from "sonner";
 
 
 const outfit = Outfit({
@@ -166,6 +167,7 @@ export default function RootLayout({
             
             <Analytics />
             <Footer />
+            <Toaster position="bottom-right" richColors closeButton />
           </AuthProvider>
         </ThemeProvider>
       </body>

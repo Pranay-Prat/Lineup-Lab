@@ -21,6 +21,7 @@ export const createLineupSchema = z.object({
         left: z.number().min(0).max(100),
         role: z.string().max(10),
         name: z.string().max(50).optional(),
+        number: z.number().min(1).max(99).optional(),
       })
     )
     .min(1, "At least one player required")

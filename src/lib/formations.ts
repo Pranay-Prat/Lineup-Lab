@@ -1,14 +1,7 @@
-export type PlayerPositions={
-    id: number ,
-    top: number,
-    left: number,
-    role: string,
-    name?: string
-}
-export type Formation = {
-  name: string;
-  positions: Omit<PlayerPositions, "name">[]; 
-};
+export type { PlayerPositions, Formation } from "@/lib/types";
+import type { PlayerPositions, Formation } from "@/lib/types";
+
+
 export const formations: Formation[]=[
   {
     name: "3-1-4-2",

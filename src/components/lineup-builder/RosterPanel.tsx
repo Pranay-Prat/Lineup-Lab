@@ -1,11 +1,99 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users } from "lucide-react";
-import { PlayerPositions } from "@/lib/formations";
+import { toast } from "sonner";
+import type { PlayerPositions } from "@/lib/types";
 import { useLineupStore } from "@/store/lineupStore";
 import { getRoleCategory, categoryColors } from "@/lib/player-utils";
+
+
+type NumberInputProps = {
+    player: PlayerPositions;
+    allPlayers: PlayerPositions[];
+    playerColor: string;
+    onCommit: (playerId: number, num: number) => void;
+};
+
+/**
+ * Editable jersey number badge.
+ * - Uses local string state so backspace/clear works freely
+ * - Commits only on blur or Enter
+ * - Shows red ring if number is already taken by another player
+ */
+const NumberInput: React.FC<NumberInputProps> = ({ player, allPlayers, playerColor, onCommit }) => {
+    const currentNumber = player.number ?? player.id;
+    const [localValue, setLocalValue] = useState(String(currentNumber));
+    const [isFocused, setIsFocused] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // Sync local value when store changes externally (e.g. formation switch)
+    useEffect(() => {
+        if (!isFocused) {
+            setLocalValue(String(player.number ?? player.id));
+        }
+    }, [player.number, player.id, isFocused]);
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value.replace(/[^0-9]/g, '');
+        // Allow empty (user is clearing) or up to 2 digits
+        if (raw.length <= 2) {
+            setLocalValue(raw);
+        }
+    };
+
+    const commitValue = () => {
+        const num = parseInt(localValue, 10);
+        if (!isNaN(num) && num >= 1 && num <= 99) {
+            const takenBy = allPlayers.find(p => p.id !== player.id && (p.number ?? p.id) === num);
+            if (takenBy) {
+                toast.error(`Jersey #${num} is already taken by ${takenBy.name || `Player ${takenBy.id}`}`);
+                setLocalValue(String(currentNumber));
+            } else {
+                onCommit(player.id, num);
+            }
+        } else {
+            // Revert to current stored value
+            setLocalValue(String(currentNumber));
+        }
+        setIsFocused(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            inputRef.current?.blur();
+        }
+    };
+
+    const handleFocus = () => {
+        setIsFocused(true);
+        // Select all text on focus so user can just type a new number
+        setTimeout(() => inputRef.current?.select(), 0);
+    };
+
+    return (
+        <div className="relative shrink-0">
+            <input
+                ref={inputRef}
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={localValue}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={commitValue}
+                onKeyDown={handleKeyDown}
+                className={`w-10 h-10 rounded-full text-sm font-bold text-white text-center bg-transparent border-2 focus:outline-none cursor-pointer appearance-none select-all transition-all duration-200
+                    ${isFocused ? 'border-white ring-2 ring-primary/50' : 'border-white/20'}
+                    [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]`}
+                style={{ backgroundColor: playerColor }}
+                title="Tap to change jersey number"
+            />
+        </div>
+    );
+};
 
 
 type RosterPanelProps = {
@@ -15,6 +103,7 @@ type RosterPanelProps = {
 
 export const RosterPanel: React.FC<RosterPanelProps> = ({ players, playerColor }) => {
     const updatePlayerName = useLineupStore((state) => state.updatePlayerName);
+    const updatePlayerNumber = useLineupStore((state) => state.updatePlayerNumber);
 
     return (
         <motion.div
@@ -36,13 +125,13 @@ export const RosterPanel: React.FC<RosterPanelProps> = ({ players, playerColor }
                                 key={player.id}
                                 className="group flex items-center gap-3 p-3 rounded-lg bg-background/40 hover:bg-accent/40 transition-all border border-transparent hover:border-border/50"
                             >
-                                {/* Player Number */}
-                                <div
-                                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-sm ring-2 ring-white/10"
-                                    style={{ backgroundColor: playerColor }}
-                                >
-                                    {player.id}
-                                </div>
+                                {/* Editable Player Number */}
+                                <NumberInput
+                                    player={player}
+                                    allPlayers={players}
+                                    playerColor={playerColor}
+                                    onCommit={updatePlayerNumber}
+                                />
                                 {/* Player Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between">
@@ -68,3 +157,4 @@ export const RosterPanel: React.FC<RosterPanelProps> = ({ players, playerColor }
 };
 
 export default RosterPanel;
+

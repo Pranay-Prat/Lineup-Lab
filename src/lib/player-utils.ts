@@ -3,7 +3,8 @@
  * Extracted from StatsPanel.tsx and RosterPanel.tsx to avoid duplication
  */
 
-export type RoleCategory = 'GK' | 'DEF' | 'MID' | 'ATT';
+import type { RoleCategory } from "@/lib/types";
+export type { RoleCategory } from "@/lib/types";
 
 /**
  * Categorizes a player role into one of four categories: GK, DEF, MID, or FWD

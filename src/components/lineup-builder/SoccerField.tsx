@@ -70,7 +70,7 @@ const SoccerField: React.FC<SoccerFieldProps> = ({ players, playerColor, pitchCo
               top={player.top}
               left={player.left}
               playerColor={playerColor}
-              number={player.id}
+              number={player.number ?? player.id}
               name={player.name}
               fieldRef={fieldRef}
             />

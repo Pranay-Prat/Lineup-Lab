@@ -15,6 +15,7 @@ type LineupStore = {
   setPitchColor: (color: typeof pitchColors[number]) => void;
   updatePlayerPosition: (id: number, top: number, left: number) => void;
   updatePlayerName: (id: number, name: string) => void;
+  updatePlayerNumber: (id: number, number: number) => void;
 };
 
 export const useLineupStore = create<LineupStore>()(
@@ -29,7 +30,7 @@ export const useLineupStore = create<LineupStore>()(
         const formation = formations.find(f => f.name === formationName) || formations[0];
         set({
           selectedFormationName: formationName,
-          players: formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}` }))
+          players: formation.positions.map(pos => ({ ...pos, name: `Player ${pos.id}`, number: pos.id }))
         });
       },
       setPlayerColor: (color) => set({ playerColor: color }),
@@ -42,6 +43,11 @@ export const useLineupStore = create<LineupStore>()(
       updatePlayerName: (id, name) => set((state) => ({
         players: state.players.map(player =>
           player.id === id ? { ...player, name } : player
+        )
+      })),
+      updatePlayerNumber: (id, number) => set((state) => ({
+        players: state.players.map(player =>
+          player.id === id ? { ...player, number } : player
         )
       })),
     }),
