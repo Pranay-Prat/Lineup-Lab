@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
-
-export const runtime = 'edge';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 export const alt = 'Lineup Lab - Create Beautiful Football Lineups';
 export const size = {
@@ -10,6 +10,10 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
+    // Read the ball loader image and convert to base64 data URL
+    const ballImageBuffer = await readFile(join(process.cwd(), 'src', 'assets', 'Ball_Loader.png'));
+    const ballImageBase64 = `data:image/png;base64,${ballImageBuffer.toString('base64')}`;
+
     return new ImageResponse(
         (
             <div
@@ -67,20 +71,23 @@ export default async function Image() {
                         zIndex: 10,
                     }}
                 >
-                    {/* Icon */}
+                    {/* Ball Loader Icon */}
                     <div
                         style={{
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            width: '100px',
-                            height: '100px',
-                            backgroundColor: '#10B981',
-                            borderRadius: '20px',
                             marginBottom: '24px',
                         }}
                     >
-                        <span style={{ fontSize: '60px' }}>⚽</span>
+                        <img
+                            src={ballImageBase64}
+                            width={100}
+                            height={100}
+                            style={{
+                                filter: 'invert(1)',
+                            }}
+                        />
                     </div>
 
                     {/* Title */}
