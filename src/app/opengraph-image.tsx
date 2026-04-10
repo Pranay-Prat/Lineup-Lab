@@ -84,6 +84,7 @@ export default async function Image() {
                             src={ballImageBase64}
                             width={100}
                             height={100}
+                            alt="Lineup Lab logo"
                             style={{
                                 filter: 'invert(1)',
                             }}
